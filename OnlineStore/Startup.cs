@@ -35,6 +35,8 @@ namespace OnlineStore
             services.AddControllers();
             services.AddSwaggerDocument();
 
+            services.AddSwaggerGen();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "Client/dist";
@@ -49,6 +51,11 @@ namespace OnlineStore
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineStore");
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -59,6 +66,8 @@ namespace OnlineStore
             {
                 endpoints.MapControllers();
             });
+
+            
 
             app.UseSpa(spa =>
             {
