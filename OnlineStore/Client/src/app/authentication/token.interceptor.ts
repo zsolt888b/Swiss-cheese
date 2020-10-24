@@ -14,7 +14,7 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private authenticationService : AuthenticationService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let token = this.authenticationService.getToken();
+    let token = this.authenticationService.getToken();;
 
     if(token){
       request = request.clone({
@@ -23,7 +23,6 @@ export class TokenInterceptor implements HttpInterceptor {
         }
       });
     }
-
     return next.handle(request);
   }
 }

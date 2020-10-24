@@ -8,11 +8,13 @@ import { TokenInterceptor } from './authentication/token.interceptor';
 import { AuthenticationService } from './services/authentication.service';
 import { RegistrationComponent } from './authentication/components/registration/registration.component';
 import { FormsModule } from '@angular/forms';
+import { LoginComponent } from './authentication/components/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

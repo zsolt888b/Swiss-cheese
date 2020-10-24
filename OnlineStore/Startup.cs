@@ -21,6 +21,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using OnlineStore.Core.Options;
 using OnlineStore.Bll.User;
+using OnlineStore.Bll.UserAccess;
+using OnlineStore.Bll.File;
 
 namespace OnlineStore
 {
@@ -87,7 +89,10 @@ namespace OnlineStore
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddHttpContextAccessor();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserAccess, UserAccess>();
+            services.AddScoped<IFileService, FileService>();
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -109,11 +114,9 @@ namespace OnlineStore
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
             app.UseAuthentication();
-
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

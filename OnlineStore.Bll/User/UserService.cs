@@ -103,7 +103,8 @@ namespace OnlineStore.Bll.User
 
                 var claims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                 };
 
                 foreach(var role in roles)
