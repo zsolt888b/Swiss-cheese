@@ -9,5 +9,7 @@ namespace OnlineStore.Dal.Entities
         public int Id { get; set; }
         public byte[] Content { get; set; }
         public string Filename { get; set; }
+        public string UserId { get; set; }
+        public User User { get; internal set; }
     }
 }

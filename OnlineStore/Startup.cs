@@ -14,6 +14,13 @@ using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using OnlineStore.Dal;
 using Microsoft.EntityFrameworkCore;
+using OnlineStore.Dal.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using OnlineStore.Core.Options;
+using OnlineStore.Bll.User;
 
 namespace OnlineStore
 {
@@ -29,13 +36,58 @@ namespace OnlineStore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtOptions>(Configuration.GetSection(nameof(JwtOptions)));
+
             services.AddDbContext<OnlineStoreDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDefaultIdentity<User>()
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<OnlineStoreDbContext>()
+                    .AddDefaultTokenProviders();
+
+
             services.AddControllers();
+
+            services.AddMvc();
             services.AddSwaggerDocument();
 
-            services.AddSwaggerGen();
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddJwtBearer(jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateActor = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["JwtOptions:Issuer"],
+                    ValidAudience = Configuration["JwtOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
+                                                       (Configuration["JwtOptions:Key"]))
+                };
+            });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 1;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+                options.User.RequireUniqueEmail = true;
+            });
+
+            services.AddScoped<IUserService, UserService>();
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -51,27 +103,27 @@ namespace OnlineStore
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineStore");
-            });
+
+            app.UseSwagger();
+            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            
+
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "../Vma.Web";
+                spa.Options.SourcePath = "/Client";
 
                 if (env.IsDevelopment())
                 {
