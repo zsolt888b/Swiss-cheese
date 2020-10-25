@@ -1,0 +1,22 @@
+<div class="d-flex" style="background-color:beige; height: 60px;justify-content: center;
+align-items: center;">
+  <div class="col-1">
+    <button class="btn btn-secondary" (click)="Home()">Home</button>
+  </div>
+  <div class="col-1"  *ngIf="isLoggedIn()==true">
+    <button class="btn btn-secondary">Upload</button>
+  </div>
+  <div class="col-1" *ngIf="isLoggedIn()==true">
+    <button class="btn btn-secondary">Profile</button>
+  </div>
+  <span class="right"></span>
+  <div class="col-1" *ngIf="isLoggedIn()==false">
+    <button class="btn btn-secondary" (click)="SignIn()">Sign-in</button>
+  </div>
+  <div class="col-1" *ngIf="isLoggedIn()==false">
+    <button class="btn btn-secondary" (click)="SignUp()">Sign-up</button>
+  </div>
+  <div class="col-1" *ngIf="isLoggedIn()==true">
+    <button class="btn btn-secondary" (click)="LogOut()">Log-out</button>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RegistrationModel, UserService } from 'src/app/api/app.generated';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
@@ -15,7 +16,7 @@ export class RegistrationComponent implements OnInit {
   username : string;
   telephoneNumber : string;
 
-  constructor(private userService : UserService) { }
+  constructor(private userService : UserService,private router : Router) { }
 
   ngOnInit(): void {
   }
@@ -28,11 +29,11 @@ export class RegistrationComponent implements OnInit {
     registrationModel.telephoneNumber=this.telephoneNumber;
     registrationModel.username=this.username;
 
-    this.userService.register(registrationModel).subscribe(res => 
+    this.userService.register(registrationModel).subscribe(res =>
       {
-
+        this.router.navigate(["log-in"]);
       },
-      error => 
+      error =>
       {
         console.log(error);
       }

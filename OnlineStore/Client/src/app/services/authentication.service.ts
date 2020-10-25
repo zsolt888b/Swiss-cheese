@@ -6,23 +6,29 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthenticationService {
 
-  private loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private loggedIn: boolean = false;
 
-  constructor() { }
+  constructor() {
+    if(this.getToken()!=null){
+      this.loggedIn = true;
+    }else{
+      this.loggedIn = false;
+    }
+   }
 
   get isLoggedIn(){
-    return this.loggedIn.asObservable();
+    return this.loggedIn;
   }
 
   login(token : string){
     if(token!=null){
       localStorage.setItem('token', token);
-      this.loggedIn.next(true);
+      this.loggedIn = true;
     }
   }
 
   logout(){
-    this.loggedIn.next(false);
+    this.loggedIn = false;
     localStorage.removeItem('token');
   }
 

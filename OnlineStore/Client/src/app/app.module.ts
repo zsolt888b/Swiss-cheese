@@ -9,12 +9,15 @@ import { AuthenticationService } from './services/authentication.service';
 import { RegistrationComponent } from './authentication/components/registration/registration.component';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './authentication/components/login/login.component';
+import { HeaderComponent } from './header/header.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistrationComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

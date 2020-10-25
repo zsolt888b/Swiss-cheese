@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FileService, LoginModel, UserService } from 'src/app/api/app.generated';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit {
   username : string;
   password : string;
 
-  constructor(private userService : UserService, private authenticationService : AuthenticationService) { }
+  constructor(private userService : UserService, private authenticationService : AuthenticationService,private router : Router) { }
 
   ngOnInit(): void {
   }
@@ -29,6 +30,7 @@ export class LoginComponent implements OnInit {
     this.userService.login(loginModel).subscribe(token =>
       {
         this.authenticationService.login(token);
+        this.router.navigate([""]);
       },
       error =>
       {
