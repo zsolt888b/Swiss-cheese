@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Bll.File;
+using OnlineStore.Core.File;
 using OnlineStore.Dal.Entities;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,27 @@ namespace OnlineStore.Api.Controllers
             this.fileService = fileService;
         }
 
-        //example controller with authorization
         [Authorize(Roles = "User" + "," + "Administrator")]
-        public async Task Upload()  
+        [HttpPost]
+        public async Task Upload([FromForm]UploadModel uploadModel)  
         {
-            await fileService.Upload();
+            await fileService.Upload(uploadModel);
+        }
+
+        [Authorize(Roles = "User" + "," + "Administrator")]
+        [HttpGet]
+        public async Task<IActionResult> Download(int fileId)
+        {
+            (byte[] file, string filename) = await fileService.Download(fileId);
+
+            return File(file, "application/octet-stream", filename);
+        }
+
+        [Authorize(Roles = "User" + "," + "Administrator")]
+        [HttpGet]
+        public async Task<List<FileModel>> GetFiles(FileSearchModel fileSearchModel)
+        {
+            return await fileService.GetFiles(fileSearchModel);
         }
     }
 }

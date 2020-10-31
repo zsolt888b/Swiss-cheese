@@ -23,6 +23,7 @@ using OnlineStore.Core.Options;
 using OnlineStore.Bll.User;
 using OnlineStore.Bll.UserAccess;
 using OnlineStore.Bll.File;
+using OnlineStore.Bll.Mapper;
 
 namespace OnlineStore
 {
@@ -88,6 +89,8 @@ namespace OnlineStore
                 options.Lockout.AllowedForNewUsers = true;
                 options.User.RequireUniqueEmail = true;
             });
+
+            services.AddSingleton(s => MapperConfig.ConfigureAutoMapper());
 
             services.AddHttpContextAccessor();
             services.AddScoped<IUserService, UserService>();

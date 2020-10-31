@@ -25,18 +25,31 @@ export class FileService {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    upload(): Observable<void> {
+    upload(file: FileParameter | null | undefined, description: string | null | undefined, filename: string | null | undefined, price: number | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/File/Upload";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("File", file.data, file.fileName ? file.fileName : "File");
+        if (description !== null && description !== undefined)
+            content_.append("Description", description.toString());
+        if (filename !== null && filename !== undefined)
+            content_.append("Filename", filename.toString());
+        if (price === null || price === undefined)
+            throw new Error("The parameter 'price' cannot be null.");
+        else
+            content_.append("Price", price.toString());
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processUpload(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -67,6 +80,112 @@ export class FileService {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+
+    download(fileId: number | undefined): Observable<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/File/Download?";
+        if (fileId === null)
+            throw new Error("The parameter 'fileId' cannot be null.");
+        else if (fileId !== undefined)
+            url_ += "fileId=" + encodeURIComponent("" + fileId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDownload(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDownload(<any>response_);
+                } catch (e) {
+                    return <Observable<FileResponse | null>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileResponse | null>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDownload(response: HttpResponseBase): Observable<FileResponse | null> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileResponse | null>(<any>null);
+    }
+
+    getFiles(fileSearchModel: FileSearchModel): Observable<FileModel[]> {
+        let url_ = this.baseUrl + "/api/File/GetFiles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(fileSearchModel);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFiles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFiles(<any>response_);
+                } catch (e) {
+                    return <Observable<FileModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetFiles(response: HttpResponseBase): Observable<FileModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(FileModel.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileModel[]>(<any>null);
     }
 }
 
@@ -226,6 +345,94 @@ export class UserService {
     }
 }
 
+export class FileModel implements IFileModel {
+    id!: number;
+    filename?: string | undefined;
+    description?: string | undefined;
+    price!: number;
+    thumbnail?: string | undefined;
+
+    constructor(data?: IFileModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.filename = _data["filename"];
+            this.description = _data["description"];
+            this.price = _data["price"];
+            this.thumbnail = _data["thumbnail"];
+        }
+    }
+
+    static fromJS(data: any): FileModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new FileModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["filename"] = this.filename;
+        data["description"] = this.description;
+        data["price"] = this.price;
+        data["thumbnail"] = this.thumbnail;
+        return data; 
+    }
+}
+
+export interface IFileModel {
+    id: number;
+    filename?: string | undefined;
+    description?: string | undefined;
+    price: number;
+    thumbnail?: string | undefined;
+}
+
+export class FileSearchModel implements IFileSearchModel {
+    filename?: string | undefined;
+
+    constructor(data?: IFileSearchModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.filename = _data["filename"];
+        }
+    }
+
+    static fromJS(data: any): FileSearchModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new FileSearchModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["filename"] = this.filename;
+        return data; 
+    }
+}
+
+export interface IFileSearchModel {
+    filename?: string | undefined;
+}
+
 export class RegistrationModel implements IRegistrationModel {
     email?: string | undefined;
     username?: string | undefined;
@@ -312,6 +519,18 @@ export class LoginModel implements ILoginModel {
 export interface ILoginModel {
     username?: string | undefined;
     password?: string | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {
