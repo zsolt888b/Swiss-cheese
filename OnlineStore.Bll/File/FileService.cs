@@ -62,9 +62,11 @@ namespace OnlineStore.Bll.File
 
             var fileBytes = await uploadModel.File.ToByteArrayAsync();
 
+            string ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
+
             dbContext.Files.Add(new Dal.Entities.File
             {
-                Filename = uploadModel.Filename,
+                Filename = uploadModel.Filename+ext,
                 Price = uploadModel.Price,
                 Description = uploadModel.Description,
                 UploadTime = DateTime.Now,

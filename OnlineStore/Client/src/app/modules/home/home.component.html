@@ -1,0 +1,37 @@
+<div class="d-flex mt-2">
+  <div class="col-1">
+    Filename:
+  </div>
+  <div class="col-3">
+    <input type="text" class="form-control" [(ngModel)]="fileName">
+  </div>
+  <div class="col-3">
+    <button class="btn btn-success" (click)="getFiles()">Search</button>
+  </div>
+</div>
+<div class="mt-1 p-4" style="border:2px solid #BFBFBF;">
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Filename</th>
+              <th class="text-left" style="border-top: none; width: 40%; color: #BFBFBF;">
+                  Description</th>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Price</th>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  </th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let file of files">
+              <td class="text-left">{{ file.filename }}</td>
+              <td class="text-left">{{ file.description }}</td>
+              <td class="text-left">{{ file.price }}</td>
+              <td>
+                  <button class="btn btn-success" (click)="download(file.id)">Download</button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>

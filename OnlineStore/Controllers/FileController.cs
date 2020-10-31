@@ -41,7 +41,7 @@ namespace OnlineStore.Api.Controllers
 
         [Authorize(Roles = "User" + "," + "Administrator")]
         [HttpGet]
-        public async Task<List<FileModel>> GetFiles(FileSearchModel fileSearchModel)
+        public async Task<List<FileModel>> GetFiles([FromQuery]FileSearchModel fileSearchModel)
         {
             return await fileService.GetFiles(fileSearchModel);
         }

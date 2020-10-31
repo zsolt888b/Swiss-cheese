@@ -10,6 +10,8 @@ import { RegistrationComponent } from './authentication/components/registration/
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './authentication/components/login/login.component';
 import { HeaderComponent } from './header/header.component';
+import { UploadComponent } from './modules/upload/upload.component';
+import { HomeComponent } from './modules/home/home.component';
 
 
 @NgModule({
@@ -17,7 +19,9 @@ import { HeaderComponent } from './header/header.component';
     AppComponent,
     RegistrationComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    UploadComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

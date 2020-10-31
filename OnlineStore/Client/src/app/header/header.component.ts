@@ -20,19 +20,23 @@ export class HeaderComponent implements OnInit {
     return this.authenticationService.isLoggedIn;
   }
 
-  SignUp(){
+  signUp(){
     this.router.navigate(["registraion"]);
   }
 
-  SignIn(){
+  signIn(){
     this.router.navigate(["log-in"]);
   }
 
-  Home(){
+  home(){
     this.router.navigate([""]);
   }
 
-  LogOut(){
+  upload(){
+    this.router.navigate(["upload"]);
+  }
+
+  logOut(){
     this.authenticationService.logout();
   }
 }

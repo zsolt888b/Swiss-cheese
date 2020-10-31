@@ -1,0 +1,33 @@
+<div style="display: flex;justify-content: center;">
+  <div class="col-6 d-flex mt-2 text-center card mb-2">
+    <div class="mt-2">
+      Filename:
+    </div>
+    <div class="mt-2">
+      <input type="text" class="form-control" [(ngModel)]="filename">
+    </div>
+    <div class="mt-2">
+      Description:
+    </div>
+    <div class="mt-2">
+      <textarea type="text" rows="5" class="form-control" [(ngModel)]="description"></textarea>
+    </div>
+    <div class="mt-2">
+      Price:
+    </div>
+    <div class="mt-2">
+      <input type="number" class="form-control" [(ngModel)]="price">
+    </div>
+    <div class="mt-2">
+      File:
+    </div>
+    <div class="mt-2">
+      <input type="file"
+           id="file"
+           (change)="handleFileInput($event.target.files)">
+    </div>
+    <div class="mt-2 mb-2">
+      <button class="btn btn-success" (click)="upload()">Upload</button>
+  </div>
+  </div>
+</div>

@@ -132,18 +132,16 @@ export class FileService {
         return _observableOf<FileResponse | null>(<any>null);
     }
 
-    getFiles(fileSearchModel: FileSearchModel): Observable<FileModel[]> {
-        let url_ = this.baseUrl + "/api/File/GetFiles";
+    getFiles(filename: string | null | undefined): Observable<FileModel[]> {
+        let url_ = this.baseUrl + "/api/File/GetFiles?";
+        if (filename !== undefined && filename !== null)
+            url_ += "Filename=" + encodeURIComponent("" + filename) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(fileSearchModel);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -395,42 +393,6 @@ export interface IFileModel {
     description?: string | undefined;
     price: number;
     thumbnail?: string | undefined;
-}
-
-export class FileSearchModel implements IFileSearchModel {
-    filename?: string | undefined;
-
-    constructor(data?: IFileSearchModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.filename = _data["filename"];
-        }
-    }
-
-    static fromJS(data: any): FileSearchModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new FileSearchModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["filename"] = this.filename;
-        return data; 
-    }
-}
-
-export interface IFileSearchModel {
-    filename?: string | undefined;
 }
 
 export class RegistrationModel implements IRegistrationModel {
