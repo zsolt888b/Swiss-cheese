@@ -11,5 +11,6 @@ namespace OnlineStore.Bll.User
         Task Register(RegistrationModel model);
         Task<string> Login(LoginModel model);
         Task Logout();
+        Task<List<UserModel>> GetUsers();
     }
 }

@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OnlineStore.Bll.UserAccess;
 using OnlineStore.Core.Options;
 using OnlineStore.Core.User;
+using OnlineStore.Dal;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,18 +22,34 @@ namespace OnlineStore.Bll.User
         private readonly UserManager<Dal.Entities.User> userManager;
         private readonly SignInManager<Dal.Entities.User> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly OnlineStoreDbContext dbContext;
+        private readonly IMapper mapper;
         private readonly JwtOptions jwtOptions;
 
         public UserService(UserManager<Dal.Entities.User> userManager,
             SignInManager<Dal.Entities.User> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<JwtOptions> jwtOptions)
+            IOptions<JwtOptions> jwtOptions,
+            OnlineStoreDbContext dbContext,
+            IMapper mapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            this.dbContext = dbContext;
+            this.mapper = mapper;
             this.jwtOptions = jwtOptions.Value;
         }
+
+        public async Task<List<UserModel>> GetUsers()
+        {
+            var users = await dbContext.ApplicationUsers.ToListAsync();
+
+            var usersMapped = mapper.Map<List<UserModel>>(users);
+
+            return usersMapped;
+        }
+
         public async Task<string> Login(LoginModel model)
         {
             var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Bll.User;
 using OnlineStore.Core.User;
 using System;
@@ -36,5 +37,13 @@ namespace OnlineStore.Api.Controllers
         {
             await userService.Logout(); 
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public async Task<List<UserModel>> GetUsers()
+        {
+            return await userService.GetUsers();
+        }
+
     }
 }

@@ -13,7 +13,6 @@ namespace OnlineStore.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class FileController : ControllerBase
     {
         private readonly IFileService fileService;
@@ -39,7 +38,6 @@ namespace OnlineStore.Api.Controllers
             return File(file, "application/octet-stream", filename);
         }
 
-        [Authorize(Roles = "User" + "," + "Administrator")]
         [HttpGet]
         public async Task<List<FileModel>> GetFiles([FromQuery]FileSearchModel fileSearchModel)
         {
