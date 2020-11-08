@@ -49,7 +49,8 @@ int add_ciff(caff* caff_file,int len, char* pixels, ciff_meta info)
     //allocate memory for the pixel, set ciffs pointer to pixels
     new_ciff->pixels = (char*) malloc( len*sizeof(char));
     error = error || (NULL == new_ciff);
-    memcpy(new_ciff->pixels, pixels, len+1);
+    //memcpy(new_ciff->pixels, pixels, len+1);
+    memcpy(new_ciff->pixels, pixels, len);
 
     new_ciff->info=info;
     //new_ciff->pixels[len+1]='\0';
