@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { FileService, LoginModel, UserService } from 'src/app/api/app.generated';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
@@ -16,7 +17,9 @@ export class LoginComponent implements OnInit {
   username : string;
   password : string;
 
-  constructor(private userService : UserService, private authenticationService : AuthenticationService,private router : Router) { }
+  constructor(private userService : UserService,
+    private authenticationService : AuthenticationService,
+    private router : Router,  private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -34,7 +37,7 @@ export class LoginComponent implements OnInit {
       },
       error =>
       {
-        console.log(error);
+        this.toastr.error("Invalid log-in!");
       })
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { FileParameter, FileService } from 'src/app/api/app.generated';
 
 @Component({
@@ -11,7 +12,7 @@ import { FileParameter, FileService } from 'src/app/api/app.generated';
 })
 export class UploadComponent implements OnInit {
 
-  constructor(private fileService : FileService, private router : Router) { }
+  constructor(private fileService : FileService, private router : Router,  private toastr: ToastrService) { }
 
   description : string;
   filename : string;
@@ -24,9 +25,10 @@ export class UploadComponent implements OnInit {
   upload(){
     this.fileService.upload(this.fileToUpload? {data: this.fileToUpload, fileName : this.fileToUpload.name} : null, this.description, this.filename, this.price)
         .subscribe(res =>{
+          this.toastr.success("File succesfully uploaded!");
           this.router.navigate([""]);
         },error =>{
-          console.log(error);
+          this.toastr.error(error);
         });
   }
 

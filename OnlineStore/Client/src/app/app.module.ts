@@ -12,6 +12,11 @@ import { LoginComponent } from './authentication/components/login/login.componen
 import { HeaderComponent } from './header/header.component';
 import { UploadComponent } from './modules/upload/upload.component';
 import { HomeComponent } from './modules/home/home.component';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ToastrModule } from 'ngx-toastr';
+import { UsersComponent } from './modules/users/users.component';
 
 
 @NgModule({
@@ -21,13 +26,17 @@ import { HomeComponent } from './modules/home/home.component';
     LoginComponent,
     HeaderComponent,
     UploadComponent,
-    HomeComponent
+    HomeComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AuthenticationService,

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { RegistrationModel, UserService } from 'src/app/api/app.generated';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
@@ -16,7 +17,7 @@ export class RegistrationComponent implements OnInit {
   username : string;
   telephoneNumber : string;
 
-  constructor(private userService : UserService,private router : Router) { }
+  constructor(private userService : UserService,private router : Router, private toastr : ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -35,7 +36,7 @@ export class RegistrationComponent implements OnInit {
       },
       error =>
       {
-        console.log(error);
+        this.toastr.error("Could not register!");
       }
     )
   }

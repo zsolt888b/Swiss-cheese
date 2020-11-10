@@ -41,6 +41,23 @@ namespace OnlineStore.Bll.User
             this.jwtOptions = jwtOptions.Value;
         }
 
+        public async Task EditUsers(List<UserModel> users)
+        {
+            foreach(var user in users)
+            {
+                var applicationUser = await dbContext.ApplicationUsers.FirstAsync(u => u.Id == user.Id);
+
+                if(user.Money!=applicationUser.Money || user.Vat!=applicationUser.Vat || user.Banned != applicationUser.Banned)
+                {
+                    applicationUser.Banned = user.Banned;
+                    applicationUser.Money = user.Money;
+                    applicationUser.Vat = user.Vat;
+
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
         public async Task<List<UserModel>> GetUsers()
         {
             var users = await dbContext.ApplicationUsers.ToListAsync();

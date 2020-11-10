@@ -1,0 +1,34 @@
+<div class="mt-1 p-4" style="border:2px solid #BFBFBF;">
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Email</th>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Username</th>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Phone number</th>
+              <th class="text-left" style="border-top: none; width: 15%; color: #BFBFBF;">
+                  Money</th>
+              <th class="text-left" style="border-top: none; width: 10%; color: #BFBFBF;">
+                  VAT</th>
+              <th class="text-left" style="border-top: none; width: 10%; color: #BFBFBF;">
+                  Banned</th>
+              <th class="text-left" style="border-top: none; width: 5%; color: #BFBFBF;">
+                <button class="btn btn-success" (click)="save()">Save</button></th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let user of users">
+              <td class="text-left">{{ user.email }}</td>
+              <td class="text-left">{{ user.userName }}</td>
+              <td class="text-left">{{ user.phoneNumber }}</td>
+              <td class="text-left"><input type="number" [(ngModel)]="user.money"></td>
+              <td class="text-left"><input type="number" [(ngModel)]="user.vat"></td>
+              <td class="text-left"><input type="checkbox" [(ngModel)]="user.banned"></td>
+              <td></td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+

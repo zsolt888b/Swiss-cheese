@@ -31,6 +31,9 @@ export class HeaderComponent implements OnInit {
   home(){
     this.router.navigate([""]);
   }
+  users(){
+    this.router.navigate(["users"]);
+  }
 
   upload(){
     this.router.navigate(["upload"]);
@@ -38,5 +41,6 @@ export class HeaderComponent implements OnInit {
 
   logOut(){
     this.authenticationService.logout();
+    this.router.navigate([""]);
   }
 }

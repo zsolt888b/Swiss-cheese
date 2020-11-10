@@ -12,5 +12,6 @@ namespace OnlineStore.Core.User
         public int Money { get; set; }
         public double Vat { get; set; }
         public bool Banned { get; set; }
+        public string Id { get; set; }
     }
 }

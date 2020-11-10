@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FileModel, FileService } from 'src/app/api/app.generated';
 import { saveAs } from 'file-saver';
+import { ToastrService } from 'ngx-toastr';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +12,7 @@ import { saveAs } from 'file-saver';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private fileService : FileService) { }
+  constructor(private fileService : FileService, private toastr: ToastrService, private authenticationService : AuthenticationService) { }
 
   files : FileModel[];
   fileName : string;
@@ -26,8 +28,15 @@ export class HomeComponent implements OnInit {
   }
 
   download(id : number){
+    if(!this.authenticationService.isLoggedIn){
+      this.toastr.error("You have to be logged-in to download!")
+      return;
+    }
+
     this.fileService.download(id).subscribe(res =>{
       saveAs(res.data, res.fileName);
+    }, error =>{
+      this.toastr.error("Not enough money!");
     })
   }
 }

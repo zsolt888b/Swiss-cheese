@@ -24,6 +24,7 @@ using OnlineStore.Bll.User;
 using OnlineStore.Bll.UserAccess;
 using OnlineStore.Bll.File;
 using OnlineStore.Bll.Mapper;
+using OnlineStore.Api.Initializer;
 
 namespace OnlineStore
 {
@@ -104,7 +105,7 @@ namespace OnlineStore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -125,7 +126,10 @@ namespace OnlineStore
                 endpoints.MapControllers();
             });
 
-
+            var dbContext = serviceProvider.GetRequiredService<OnlineStoreDbContext>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            DbInitializer.Initialize(dbContext, userManager, roleManager);
 
             app.UseSpa(spa =>
             {
