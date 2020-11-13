@@ -11,5 +11,10 @@ namespace OnlineStore.Bll.File
         Task Upload(UploadModel uploadModel);
         Task<(byte[],string)> Download(int fileId);
         Task<List<FileModel>> GetFiles(FileSearchModel fileSearchModel);
+        Task DeleteFile(int fileId);
+        Task Comment(NewCommentModel model);
+        Task DeleteComment(int commentId);
+        Task<FileModel> GetFileDetails(int fileId);
+        Task<List<CommentModel>> GetCommentsForFile(int fileId);
     }
 }

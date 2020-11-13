@@ -1,0 +1,50 @@
+<div class="d-flex mt-2" *ngIf="file">
+  <div class="col-1">
+    Filename:
+  </div>
+  <div class="col-3">
+    {{ file.filename}}
+  </div>
+  <div class="col-1">
+    Description:
+  </div>
+  <div class="col-3">
+    {{ file.description}}
+  </div>
+  <div class="col-1">
+    Price:
+  </div>
+  <div class="col-3">
+    {{ file.price}}
+  </div>
+</div>
+<div style="display: flex;justify-content: center;">
+  <div class="col-6 d-flex mt-2 text-center card mb-2">
+    <div class="mt-2">
+      <textarea type="text" rows="5" class="form-control" [(ngModel)]="commentText"></textarea>
+    </div>
+    <div class="mt-2 mb-2">
+      <button class="btn btn-success" (click)="comment()">Comment</button>
+  </div>
+  </div>
+</div>
+
+<div class="mt-2 p-4" style="border:2px solid #BFBFBF;" *ngIf="comments">
+  <div *ngFor="let comment of comments">
+    <div>
+      {{ comment.uploader}}
+      <span class="right"></span>
+      {{ comment.uploadTime}}
+    </div>
+    <div>
+     <div class="comment">
+      {{ comment.text }}
+     </div>
+    </div>
+    <div>
+      <span class="right"></span>
+      <button class="btn btn-danger" (click)="deleteComment(comment.id)">Delete</button>
+    </div>
+    <hr>
+  </div>
+</div>

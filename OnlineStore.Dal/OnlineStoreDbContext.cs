@@ -16,5 +16,6 @@ namespace OnlineStore.Dal
         }
         public DbSet<File> Files { get; set; }
         public DbSet<User> ApplicationUsers { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

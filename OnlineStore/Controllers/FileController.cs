@@ -43,5 +43,38 @@ namespace OnlineStore.Api.Controllers
         {
             return await fileService.GetFiles(fileSearchModel);
         }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        public async Task DeleFile(int fileId)
+        {
+            await fileService.DeleteFile(fileId);
+        }
+
+        [Authorize(Roles = "User" + "," + "Administrator")]
+        [HttpPost]
+        public async Task Comment([FromQuery]NewCommentModel model)
+        {
+            await fileService.Comment(model);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        public async Task DeleteComment(int commentId)
+        {
+            await fileService.DeleteComment(commentId);
+        }
+
+        [HttpGet]
+        public async Task<FileModel> GetFileDetails(int fileId)
+        {
+            return await fileService.GetFileDetails(fileId);
+        }
+
+        [HttpGet]
+        public async Task<List<CommentModel>> GetCommentsForFile(int fileId)
+        {
+            return await fileService.GetCommentsForFile(fileId);
+        }
     }
 }

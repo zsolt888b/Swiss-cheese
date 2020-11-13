@@ -26,6 +26,52 @@ namespace OnlineStore.Bll.File
             this.mapper = mapper;
         }
 
+        public async Task Comment(NewCommentModel model)
+        {
+            var user = await userAccess.GetUser();
+
+            if (user.Banned)
+            {
+                throw new Exception("Can't post while banned!");
+            }
+
+            var newComment = new Dal.Entities.Comment
+            {
+                FileId = model.FileId,
+                Uploader = user.UserName,
+                UploadTime = DateTime.Now,
+                Text = model.Text
+            };
+
+            dbContext.Comments.Add(newComment);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteFile(int fileId)
+        {
+            var file = await dbContext.Files
+                .Include(f => f.Comments)
+                .FirstAsync(f => f.Id == fileId);
+
+            dbContext.Comments.RemoveRange(file.Comments);
+
+            await dbContext.SaveChangesAsync();
+
+            dbContext.Remove(file);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteComment(int commentId)
+        {
+            var comment = await dbContext.Comments.FirstAsync(c => c.Id == commentId);
+
+            comment.Text = "Removed by Moderator.";
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<(byte[],string)> Download(int fileId)
         {
             var user = await userAccess.GetUser();
@@ -42,6 +88,24 @@ namespace OnlineStore.Bll.File
             await dbContext.SaveChangesAsync();
 
             return (file.Content, file.Filename);
+        }
+
+        public async Task<List<CommentModel>> GetCommentsForFile(int fileId)
+        {
+            var comments = await dbContext.Comments.Where(c => c.FileId == fileId).OrderBy(c => c.UploadTime).ToListAsync();
+
+            var mappedComments = mapper.Map<List<CommentModel>>(comments);
+
+            return mappedComments;
+        }
+
+        public async Task<FileModel> GetFileDetails(int fileId)
+        {
+            var file = await dbContext.Files.FirstAsync(f => f.Id == fileId);
+
+            var mappedFile = mapper.Map<FileModel>(file);
+
+            return mappedFile;
         }
 
         public async Task<List<FileModel>> GetFiles(FileSearchModel fileSearchModel)

@@ -69,6 +69,7 @@ namespace OnlineStore
                     ValidateActor = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
+                    SaveSigninToken = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["JwtOptions:Issuer"],
                     ValidAudience = Configuration["JwtOptions:Audience"],

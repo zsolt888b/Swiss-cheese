@@ -15,5 +15,6 @@ namespace OnlineStore.Dal.Entities
         public DateTime UploadTime { get; set; }
         public string UserId { get; set; }
         public User User { get; internal set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }

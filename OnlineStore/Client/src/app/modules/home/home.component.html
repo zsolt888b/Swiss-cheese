@@ -25,11 +25,13 @@
       </thead>
       <tbody>
           <tr *ngFor="let file of files">
-              <td class="text-left">{{ file.filename }}</td>
+              <td class="text-left"><button (click)="navigateToDetails(file.id)">{{ file.filename }}</button></td>
               <td class="text-left">{{ file.description }}</td>
               <td class="text-left">{{ file.price }}</td>
               <td>
                   <button class="btn btn-success" (click)="download(file.id)">Download</button>
+                  &nbsp;
+                  <button class="btn btn-danger" (click)="deleteFile(file.id)">Deleted</button>
               </td>
           </tr>
       </tbody>

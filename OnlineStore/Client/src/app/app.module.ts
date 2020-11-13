@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 import { UsersComponent } from './modules/users/users.component';
+import { FileDetailsComponent } from './modules/file-details/file-details.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { UsersComponent } from './modules/users/users.component';
     HeaderComponent,
     UploadComponent,
     HomeComponent,
-    UsersComponent
+    UsersComponent,
+    FileDetailsComponent
   ],
   imports: [
     BrowserModule,

@@ -15,6 +15,7 @@ namespace OnlineStore.Bll.Mapper
             {
                 cfg.CreateMap<Dal.Entities.File, FileModel>();
                 cfg.CreateMap<Dal.Entities.User, UserModel>();
+                cfg.CreateMap<Dal.Entities.Comment, CommentModel>();
             });
 
             config.AssertConfigurationIsValid();
