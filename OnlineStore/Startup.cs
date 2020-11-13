@@ -25,6 +25,7 @@ using OnlineStore.Bll.UserAccess;
 using OnlineStore.Bll.File;
 using OnlineStore.Bll.Mapper;
 using OnlineStore.Api.Initializer;
+using OnlineStore.Api.ExceptionMiddleware;
 
 namespace OnlineStore
 {
@@ -114,14 +115,18 @@ namespace OnlineStore
             }
 
 
+
             app.UseSwagger();
             app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

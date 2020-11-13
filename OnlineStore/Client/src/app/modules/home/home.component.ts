@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
     this.fileService.download(id).subscribe(res =>{
       saveAs(res.data, res.fileName);
     }, error =>{
-      this.toastr.error("Not enough money!");
+
     })
   }
 

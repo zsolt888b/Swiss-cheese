@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { UsersComponent } from './modules/users/users.component';
 import { FileDetailsComponent } from './modules/file-details/file-details.component';
+import { ErrorInterceptor } from './modules/interceptors/error.interceptor';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { FileDetailsComponent } from './modules/file-details/file-details.compon
   providers: [
     AuthenticationService,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
