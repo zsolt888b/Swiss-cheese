@@ -18,7 +18,7 @@ Angular CLI
 
 # Start server:
 
-Use IIS Express to start the backend side (Run via Visul Studio, .Api project)
+Use IIS Express to start the backend side (Run via Visual Studio, .Api project)
 
 # Start client:
 
