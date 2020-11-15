@@ -13,7 +13,6 @@ namespace OnlineStore.Api.ExceptionMiddleware
         private RequestDelegate Next { get; }
         private IJsonHelper JsonHelper { get; }
 
-
         public ExceptionHandlingMiddleware(
             RequestDelegate next,
             IJsonHelper jsonHelper)
