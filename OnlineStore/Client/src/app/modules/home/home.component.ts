@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommentModel, FileModel, FileService } from 'src/app/api/app.generated';
+import { CommentModel, FileModel, FileService, UserService } from 'src/app/api/app.generated';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/services/authentication.service';
@@ -9,14 +9,17 @@ import { Router } from '@angular/router';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  providers: [ FileService]
+  providers: [ FileService, UserService]
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private fileService : FileService, private toastr: ToastrService, private authenticationService : AuthenticationService, private router : Router) { }
+  constructor(private fileService : FileService, private toastr: ToastrService,
+    private authenticationService : AuthenticationService, private router : Router,
+    private userService : UserService) { }
 
   files : FileModel[];
   fileName : string;
+  isAdmin : boolean;
 
   ngOnInit(): void {
     this.getFiles();
@@ -46,11 +49,17 @@ export class HomeComponent implements OnInit {
   }
 
   deleteFile(id : number){
-    this.fileService.deleFile(id).subscribe(res =>{
-      this.toastr.success("File deleted!")
-      this.getFiles();
-    }, error =>{
-      this.toastr.error("Only administrators can access this!");
+    this.userService.getRole().subscribe(res =>{
+      if(res){
+        this.fileService.deleFile(id).subscribe(res =>{
+          this.toastr.success("File deleted!")
+          this.getFiles();
+        }, error =>{
+
+        })
+      }else{
+        this.toastr.error("Only administrators can access this!");
+      }
     })
   }
 }

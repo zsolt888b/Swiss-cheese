@@ -52,5 +52,12 @@ namespace OnlineStore.Api.Controllers
             await userService.EditUsers(models);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "User" + "," + "Administrator")]
+        public async Task<UserModel> GetUser()
+        {
+            return await userService.GetUser();
+        }
+
     }
 }

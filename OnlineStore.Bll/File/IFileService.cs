@@ -16,5 +16,6 @@ namespace OnlineStore.Bll.File
         Task DeleteComment(int commentId);
         Task<FileModel> GetFileDetails(int fileId);
         Task<List<CommentModel>> GetCommentsForFile(int fileId);
+        Task<List<FileModel>> GetMyFiles();
     }
 }

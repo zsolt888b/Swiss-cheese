@@ -19,6 +19,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { UsersComponent } from './modules/users/users.component';
 import { FileDetailsComponent } from './modules/file-details/file-details.component';
 import { ErrorInterceptor } from './modules/interceptors/error.interceptor';
+import { UserService } from './api/app.generated';
+import { ProfileComponent } from './modules/profile/profile.component';
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import { ErrorInterceptor } from './modules/interceptors/error.interceptor';
     UploadComponent,
     HomeComponent,
     UsersComponent,
-    FileDetailsComponent
+    FileDetailsComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

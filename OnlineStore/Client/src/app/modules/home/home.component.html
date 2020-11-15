@@ -15,7 +15,7 @@
           <tr>
               <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
                   Filename</th>
-              <th class="text-left" style="border-top: none; width: 40%; color: #BFBFBF;">
+              <th class="text-left" style="border-top: none; width: 30%; color: #BFBFBF;">
                   Description</th>
               <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
                   Price</th>
@@ -25,13 +25,15 @@
       </thead>
       <tbody>
           <tr *ngFor="let file of files">
-              <td class="text-left"><button (click)="navigateToDetails(file.id)">{{ file.filename }}</button></td>
+              <td class="text-left">{{ file.filename }}</td>
               <td class="text-left">{{ file.description }}</td>
               <td class="text-left">{{ file.price }}</td>
               <td>
-                  <button class="btn btn-success" (click)="download(file.id)">Download</button>
-                  &nbsp;
-                  <button class="btn btn-danger" (click)="deleteFile(file.id)">Deleted</button>
+                <button class="btn btn-secondary" (click)="navigateToDetails(file.id)">Details</button>
+                &nbsp;
+                <button class="btn btn-success" (click)="download(file.id)">Download</button>
+                &nbsp;
+                <button class="btn btn-danger" (click)="deleteFile(file.id)">Deleted</button>
               </td>
           </tr>
       </tbody>

@@ -140,5 +140,19 @@ namespace OnlineStore.Bll.File
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<FileModel>> GetMyFiles()
+        {
+            var user = await userAccess.GetUser();
+
+            var userFiles = (await dbContext.ApplicationUsers
+                                .Include(u => u.UserFiles)
+                                .FirstAsync(u => u.Id == user.Id))
+                                .UserFiles;
+
+            var mappedFiles = mapper.Map<List<FileModel>>(userFiles);
+
+            return mappedFiles;
+        }
     }
 }

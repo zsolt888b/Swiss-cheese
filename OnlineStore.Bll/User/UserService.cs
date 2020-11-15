@@ -24,6 +24,7 @@ namespace OnlineStore.Bll.User
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly OnlineStoreDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly IUserAccess userAccess;
         private readonly JwtOptions jwtOptions;
 
         public UserService(UserManager<Dal.Entities.User> userManager,
@@ -31,13 +32,15 @@ namespace OnlineStore.Bll.User
             RoleManager<IdentityRole> roleManager,
             IOptions<JwtOptions> jwtOptions,
             OnlineStoreDbContext dbContext,
-            IMapper mapper)
+            IMapper mapper,
+            IUserAccess userAccess)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.userAccess = userAccess;
             this.jwtOptions = jwtOptions.Value;
         }
 
@@ -56,6 +59,15 @@ namespace OnlineStore.Bll.User
                     await dbContext.SaveChangesAsync();
                 }
             }
+        }
+
+        public async Task<UserModel> GetUser()
+        {
+            var user = await userAccess.GetUser();
+
+            var userMapped = mapper.Map<UserModel>(user);
+
+            return userMapped;
         }
 
         public async Task<List<UserModel>> GetUsers()

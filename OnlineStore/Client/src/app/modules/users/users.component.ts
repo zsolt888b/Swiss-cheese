@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserModel, UserService } from 'src/app/api/app.generated';
 
@@ -10,11 +11,17 @@ import { UserModel, UserService } from 'src/app/api/app.generated';
 })
 export class UsersComponent implements OnInit {
 
-  constructor(private userService : UserService, private toastr : ToastrService) { }
+  constructor(private userService : UserService, private toastr : ToastrService,private router : Router) { }
 
   users : UserModel[] = [];
 
   ngOnInit(): void {
+    this.userService.getRole().subscribe(res =>{
+      if(res==false){
+        this.toastr.error("Only administrators can access this!");
+        this.router.navigate([""]);
+      }
+    })
     this.getUsers();
   }
 
@@ -22,7 +29,6 @@ export class UsersComponent implements OnInit {
     this.userService.getUsers().subscribe(res =>{
       this.users = res;
     }, error =>{
-      this.toastr.error("Only administrators can access this!");
     })
   }
 

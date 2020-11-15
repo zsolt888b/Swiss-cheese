@@ -1,0 +1,51 @@
+<div style="display: flex;justify-content: center;">
+  <div class="col-6 mt-2 text-center mb-2" *ngIf="user">
+    <div class="mt-2">
+      <b>Username:</b>
+    </div>
+    <div class="mt-2">
+      {{ user.userName }}
+    </div>
+    <div class="mt-2">
+      <b>E-mail:</b>
+    </div>
+    <div class="mt-2">
+      {{ user.email }}
+    </div>
+    <div class="mt-2">
+      <b>Telephone number:</b>
+    </div>
+    <div class="mt-2">
+      {{ user.phoneNumber }}
+    </div>
+    <div class="mt-2">
+      <b>Money:</b>
+    </div>
+    <div class="mt-2">
+      {{ user.money }}
+    </div>
+  </div>
+</div>
+<div class="mt-1 p-4" style="border:2px solid #BFBFBF;" *ngIf="files">
+  <h3>My uploaded files:</h3>
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th class="text-left" style="border-top: none; width: 30%; color: #BFBFBF;">
+                  Filename</th>
+              <th class="text-left" style="border-top: none; width: 40%; color: #BFBFBF;">
+                  Description</th>
+              <th class="text-left" style="border-top: none; width: 30%; color: #BFBFBF;">
+                  Price</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let file of files">
+              <td class="text-left">{{ file.filename }}</td>
+              <td class="text-left">{{ file.description }}</td>
+              <td class="text-left">{{ file.price }}</td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+

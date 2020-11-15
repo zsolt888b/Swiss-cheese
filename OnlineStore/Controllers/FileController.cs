@@ -76,5 +76,12 @@ namespace OnlineStore.Api.Controllers
         {
             return await fileService.GetCommentsForFile(fileId);
         }
+
+        [Authorize(Roles = "User" + "," + "Administrator")]
+        [HttpGet]
+        public async Task<List<FileModel>> GetMyFiles()
+        {
+            return await fileService.GetMyFiles();
+        }
     }
 }

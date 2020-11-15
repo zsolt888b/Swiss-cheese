@@ -13,5 +13,6 @@ namespace OnlineStore.Bll.User
         Task Logout();
         Task<List<UserModel>> GetUsers();
         Task EditUsers(List<UserModel> users);
+        Task<UserModel> GetUser();
     }
 }
