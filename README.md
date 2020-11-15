@@ -24,7 +24,7 @@ Use IIS Express to start the backend side (Run via Visul Studio, .Api project)
 
 Navigate to the projects client folder (../Client)
 
-First time start type "nmp i" in command line to instll all used packages
+First time start type "npm i" in command line to instll all used packages
 
 Start the client by typing in command "ng serve"
 
