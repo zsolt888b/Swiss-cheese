@@ -31,5 +31,5 @@ Start the client by typing in command "ng serve"
 # Register/Login in to use the program.
 
 There is a seeded amin user:
-  - **doc**: Name: Adminuser
-  - **doc**: Password: Adminuser123
+  - Name: Adminuser
+  - Password: Adminuser123
