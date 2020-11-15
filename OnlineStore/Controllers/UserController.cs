@@ -54,6 +54,13 @@ namespace OnlineStore.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "User" + "," + "Administrator")]
+        public async Task<bool> GetRole()
+        {
+            return await userService.GetRole();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User" + "," + "Administrator")]
         public async Task<UserModel> GetUser()
         {
             return await userService.GetUser();

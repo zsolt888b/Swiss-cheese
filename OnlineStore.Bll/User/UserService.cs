@@ -61,6 +61,15 @@ namespace OnlineStore.Bll.User
             }
         }
 
+        public async Task<bool> GetRole()
+        {
+            var user = await userAccess.GetUser();
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            return roles.Contains("Administrator");
+        }
+
         public async Task<UserModel> GetUser()
         {
             var user = await userAccess.GetUser();
