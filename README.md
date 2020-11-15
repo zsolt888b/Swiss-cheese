@@ -28,7 +28,7 @@ First time start type "npm i" in command line to instll all used packages
 
 Start the client by typing in command "ng serve"
 
-# Register/Login in to use the program.
+# Register/Login to use the program.
 
 There is a seeded amin user:
   - Name: Adminuser
