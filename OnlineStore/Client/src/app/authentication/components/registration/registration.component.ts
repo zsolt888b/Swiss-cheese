@@ -36,7 +36,7 @@ export class RegistrationComponent implements OnInit {
       },
       error =>
       {
-        this.toastr.error("Could not register!");
+
       }
     )
   }

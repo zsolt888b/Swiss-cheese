@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       },
       error =>
       {
-        this.toastr.error("Invalid log-in!");
+
       })
   }
 }

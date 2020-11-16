@@ -80,7 +80,7 @@ namespace OnlineStore.Bll.File
 
             if(user.Money < file.Price)
             {
-                throw new Exception("Not enough monoey to download that!");
+                throw new Exception("Not enough money to download that!");
             }
 
             user.Money -= file.Price;

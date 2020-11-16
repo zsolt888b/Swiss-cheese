@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { uptime } from 'process';
 import { Observable } from 'rxjs';
 import { UserService } from '../api/app.generated';
@@ -13,7 +14,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private authenticationService : AuthenticationService, private router : Router) { }
+  constructor(private authenticationService : AuthenticationService, private router : Router, private userService : UserService, private toastr : ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -35,7 +36,13 @@ export class HeaderComponent implements OnInit {
   }
 
   users(){
-    this.router.navigate(["users"]);
+    this.userService.getRole().subscribe(res =>{
+      if(res){
+        this.router.navigate(["users"]);
+      }else{
+        this.toastr.error("Only administrators can access this!");
+      }
+    })
   }
 
   profile(){
@@ -49,7 +56,7 @@ export class HeaderComponent implements OnInit {
   logOut(){
     this.authenticationService.logout();
     this.router.navigate([""]);
+    this.userService.logout().subscribe();
+    this.toastr.info("Logged-out!")
   }
-
-
 }

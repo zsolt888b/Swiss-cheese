@@ -28,7 +28,7 @@ export class UploadComponent implements OnInit {
           this.toastr.success("File succesfully uploaded!");
           this.router.navigate([""]);
         },error =>{
-          this.toastr.error(error);
+
         });
   }
 
