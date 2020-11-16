@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineStore.Bll.UserAccess;
@@ -25,6 +26,7 @@ namespace OnlineStore.Bll.User
         private readonly OnlineStoreDbContext dbContext;
         private readonly IMapper mapper;
         private readonly IUserAccess userAccess;
+        private readonly ILogger<UserService> logger;
         private readonly JwtOptions jwtOptions;
 
         public UserService(UserManager<Dal.Entities.User> userManager,
@@ -33,7 +35,8 @@ namespace OnlineStore.Bll.User
             IOptions<JwtOptions> jwtOptions,
             OnlineStoreDbContext dbContext,
             IMapper mapper,
-            IUserAccess userAccess)
+            IUserAccess userAccess,
+            ILogger<UserService> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -41,11 +44,14 @@ namespace OnlineStore.Bll.User
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.userAccess = userAccess;
+            this.logger = logger;
             this.jwtOptions = jwtOptions.Value;
         }
 
         public async Task EditUsers(List<UserModel> users)
         {
+            var adminUser = await userAccess.GetUser();
+
             foreach(var user in users)
             {
                 var applicationUser = await dbContext.ApplicationUsers.FirstAsync(u => u.Id == user.Id);
@@ -57,6 +63,8 @@ namespace OnlineStore.Bll.User
                     applicationUser.Vat = user.Vat;
 
                     await dbContext.SaveChangesAsync();
+
+                    logger.LogInformation(adminUser.Id + ": edited a user(" + user.Id + ")");
                 }
             }
         }
@@ -136,9 +144,11 @@ namespace OnlineStore.Bll.User
                 var userRole = new IdentityRole("User");
                 await roleManager.CreateAsync(userRole);
                 await userManager.AddToRoleAsync(userReg, userRole.Name);
+                logger.LogInformation(userReg.Id + ": registered!");
             }
             catch(Exception ex)
             {
+                logger.LogError(ex, "Error during registration!");
                 throw new Exception("Internal server error! Exception:",ex);
             }
         }
@@ -187,7 +197,8 @@ namespace OnlineStore.Bll.User
             }
             else
             {
-                throw new Exception("Something went wrong!");
+                logger.LogInformation(model.Username + ": no such user found in the database!");
+                throw new Exception("No such user found in the database!");
             }
         }
     }

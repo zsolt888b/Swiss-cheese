@@ -26,6 +26,7 @@ using OnlineStore.Bll.File;
 using OnlineStore.Bll.Mapper;
 using OnlineStore.Api.Initializer;
 using OnlineStore.Api.ExceptionMiddleware;
+using System.IO;
 
 namespace OnlineStore
 {
@@ -107,8 +108,11 @@ namespace OnlineStore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddFile("Logs/log-{Date}.log");
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

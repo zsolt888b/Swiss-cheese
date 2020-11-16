@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineStore.Bll.Extensions;
 using OnlineStore.Bll.UserAccess;
 using OnlineStore.Core.File;
@@ -16,14 +17,17 @@ namespace OnlineStore.Bll.File
         private readonly IUserAccess userAccess;
         private readonly OnlineStoreDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ILogger<FileService> logger;
 
         public FileService(IUserAccess userAccess,
                            OnlineStoreDbContext dbContext,
-                           IMapper mapper)
+                           IMapper mapper,
+                           ILogger<FileService> logger)
         {
             this.userAccess = userAccess;
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task Comment(NewCommentModel model)
@@ -46,10 +50,14 @@ namespace OnlineStore.Bll.File
             dbContext.Comments.Add(newComment);
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogInformation(user.Id + ": commented on a file!(ID:" + model.FileId + ")");
         }
 
         public async Task DeleteFile(int fileId)
         {
+            var user = await userAccess.GetUser();
+
             var file = await dbContext.Files
                 .Include(f => f.Comments)
                 .FirstAsync(f => f.Id == fileId);
@@ -61,15 +69,21 @@ namespace OnlineStore.Bll.File
             dbContext.Remove(file);
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogInformation(user.Id + ": deleted a file!(ID:" + fileId + ")");
         }
 
         public async Task DeleteComment(int commentId)
         {
+            var user = await userAccess.GetUser();
+
             var comment = await dbContext.Comments.FirstAsync(c => c.Id == commentId);
 
             comment.Text = "Removed by Moderator.";
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogInformation(user.Id + ": moderated a comment!(" + comment.Id + ")");
         }
 
         public async Task<(byte[],string)> Download(int fileId)
@@ -80,12 +94,15 @@ namespace OnlineStore.Bll.File
 
             if(user.Money < file.Price)
             {
+                logger.LogInformation(user.Id + ": not enough money to download the selected file!(" +file.Filename + ")");
                 throw new Exception("Not enough money to download that!");
             }
 
             user.Money -= file.Price;
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogInformation(user.Id + ": downloaded a file!(" + file.Filename + ")");
 
             return (file.Content, file.Filename);
         }
@@ -139,6 +156,8 @@ namespace OnlineStore.Bll.File
             });
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogInformation(user.Id + ": nuploaded a file!(" + uploadModel.Filename + ")");
         }
 
         public async Task<List<FileModel>> GetMyFiles()
