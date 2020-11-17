@@ -23,6 +23,32 @@ export class UploadComponent implements OnInit {
   }
 
   upload(){
+    if(this.chackForWhiteSpacesOrNull(this.filename)==false){
+      this.toastr.error("File name is required!")
+      return;
+    }
+
+    if(this.chackForWhiteSpacesOrNull(this.description)==false){
+      this.toastr.error("Description is required!")
+      return;
+    }
+
+    if(this.fileToUpload==null){
+      this.toastr.error("File is required!")
+      return;
+    }
+
+    let extension = this.fileToUpload.name.split('.').pop();
+    if(extension!="caff"){
+      this.toastr.error("File is not a CAFF file!")
+      return;
+    }
+
+    if(this.price==null || this.price<0){
+      this.toastr.error("Price is required!")
+      return;
+    }
+
     this.fileService.upload(this.fileToUpload? {data: this.fileToUpload, fileName : this.fileToUpload.name} : null, this.description, this.filename, this.price)
         .subscribe(res =>{
           this.toastr.success("File succesfully uploaded!");
@@ -34,6 +60,16 @@ export class UploadComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
+  }
+
+  chackForWhiteSpacesOrNull(string : String) : Boolean{
+    if(string==null){
+      return false;
+    }
+    if (!string.replace(/\s/g, '').length) {
+      return false;
+    }
+    return true;
   }
 
 }

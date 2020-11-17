@@ -26,6 +26,16 @@ export class LoginComponent implements OnInit {
 
   login(){
 
+    if(this.chackForWhiteSpacesOrNull(this.username)==false){
+      this.toastr.error("Username is required!")
+      return;
+    }
+
+    if(this.chackForWhiteSpacesOrNull(this.password)==false){
+      this.toastr.error("Password is required!")
+      return;
+    }
+
     let loginModel = new LoginModel();
     loginModel.username=this.username;
     loginModel.password=this.password
@@ -39,5 +49,15 @@ export class LoginComponent implements OnInit {
       {
 
       })
+  }
+
+  chackForWhiteSpacesOrNull(string : String) : Boolean{
+    if(string==null){
+      return false;
+    }
+    if (!string.replace(/\s/g, '').length) {
+      return false;
+    }
+    return true;
   }
 }

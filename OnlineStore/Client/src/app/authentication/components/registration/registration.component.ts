@@ -24,6 +24,26 @@ export class RegistrationComponent implements OnInit {
 
   regist(){
 
+    if(this.chackForWhiteSpacesOrNull(this.password)==false){
+      this.toastr.error("Password is required!")
+      return;
+    }
+
+    if(this.chackForWhiteSpacesOrNull(this.email)==false){
+      this.toastr.error("Email is required!")
+      return;
+    }
+
+    if(this.chackForWhiteSpacesOrNull(this.username)==false){
+      this.toastr.error("Username is required!")
+      return;
+    }
+
+    if(this.chackForWhiteSpacesOrNull(this.telephoneNumber)==false){
+      this.toastr.error("Telephone number is required!")
+      return;
+    }
+
     let registrationModel = new RegistrationModel();
     registrationModel.email=this.email;
     registrationModel.password=this.password;
@@ -39,6 +59,16 @@ export class RegistrationComponent implements OnInit {
 
       }
     )
+  }
+
+  chackForWhiteSpacesOrNull(string : String) : Boolean{
+    if(string==null){
+      return false;
+    }
+    if (!string.replace(/\s/g, '').length) {
+      return false;
+    }
+    return true;
   }
 
 }
