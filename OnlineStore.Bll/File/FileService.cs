@@ -143,7 +143,12 @@ namespace OnlineStore.Bll.File
 
             var fileBytes = await uploadModel.File.ToByteArrayAsync();
 
-            string ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
+            string ext = String.Empty;
+
+            if (fileBytes !=null)
+            {
+               ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
+            }
 
             dbContext.Files.Add(new Dal.Entities.File
             {
