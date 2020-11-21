@@ -14,8 +14,10 @@
       <thead>
           <tr>
               <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
+                  Thumbnail</th>
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
                   Filename</th>
-              <th class="text-left" style="border-top: none; width: 30%; color: #BFBFBF;">
+              <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
                   Description</th>
               <th class="text-left" style="border-top: none; width: 20%; color: #BFBFBF;">
                   Price</th>
@@ -25,6 +27,13 @@
       </thead>
       <tbody>
           <tr *ngFor="let file of files">
+              <td>
+                <div *ngIf="file.thumbnail" class="imagebox">
+                    <div class="image-div">
+                      <img src="data:image/JPEG;base64,{{file.thumbnail}}" class="image-display">
+                    </div>
+                </div>
+              </td>
               <td class="text-left">{{ file.filename }}</td>
               <td class="text-left">{{ file.description }}</td>
               <td class="text-left">{{ file.price }}</td>

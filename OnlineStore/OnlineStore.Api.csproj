@@ -22,5 +22,11 @@
     <ProjectReference Include="..\OnlineStore.Dal\OnlineStore.Dal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Initializer\testfile.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

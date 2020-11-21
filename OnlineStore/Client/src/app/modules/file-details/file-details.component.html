@@ -18,6 +18,13 @@
     <div class="mt-2">
       {{ file.price }}
     </div>
+    <div class="mt-2" *ngIf="file.thumbnail">
+      <div class="imagebox">
+        <div class="image-div">
+          <img src="data:image/JPEG;base64,{{file.thumbnail}}" class="image-display">
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div style="display: flex;justify-content: center;">
