@@ -162,7 +162,7 @@ namespace OnlineStore.Bll.File
 
             await dbContext.SaveChangesAsync();
 
-            logger.LogInformation(user.Id + ": nuploaded a file!(" + uploadModel.Filename + ")");
+            logger.LogInformation(user.Id + ": uploaded a file!(" + uploadModel.Filename + ")");
         }
 
         public async Task<List<FileModel>> GetMyFiles()
