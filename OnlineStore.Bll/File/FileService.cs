@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStore.Bll.Extensions;
@@ -8,6 +9,8 @@ using OnlineStore.Core.File;
 using OnlineStore.Dal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -149,33 +152,73 @@ namespace OnlineStore.Bll.File
 
             var user = await userAccess.GetUser();
 
-            var fileBytes = await uploadModel.File.ToByteArrayAsync();
+            string path = Path.Combine(Environment.CurrentDirectory + "/Parser", uploadModel.Filename);
+            string parser_path = Path.Combine(Environment.CurrentDirectory + "/Parser", "Parser.exe");
+            string bmp_path = Path.Combine(Environment.CurrentDirectory + "/Parser" + "preview_image.bmp");
 
-            string ext = String.Empty;
+            await FileSaveExtension.SaveAsAsync(uploadModel.File, path);
 
-            if (fileBytes !=null)
+            byte[] previewBytes = null;
+
+            try
             {
-               ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
-
-                if (ext != ".caff")
+                if (System.IO.File.Exists(path))
                 {
-                    throw new Exception("Wrong file format!");
+                    Process process = new Process();
+                    process.StartInfo.FileName = parser_path;
+                    process.StartInfo.Arguments = path;
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true; ;
+                    process.Start();
+
+                    process.WaitForExit();
+
+                    if (process.ExitCode == 1)
+                    {
+                        throw new Exception("Something went wrong during parsing CAFF file!");
+                    }
+
+                    if (System.IO.File.Exists(bmp_path))
+                    {
+                        previewBytes = System.IO.File.ReadAllBytes(bmp_path);
+                    }
                 }
             }
-
-            dbContext.Files.Add(new Dal.Entities.File
+            catch
             {
-                Filename = uploadModel.Filename+ext,
-                Price = uploadModel.Price,
-                Description = uploadModel.Description,
-                UploadTime = DateTime.Now,
-                Content = fileBytes,
-                UserId = user.Id
-            });
+                throw;
+            }
+            finally
+            {
+                var fileBytes = await uploadModel.File.ToByteArrayAsync();
 
-            await dbContext.SaveChangesAsync();
+                string ext = String.Empty;
 
-            logger.LogInformation(user.Id + ": uploaded a file!(" + uploadModel.Filename + ")");
+                if (fileBytes != null)
+                {
+                    ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
+                }
+
+                dbContext.Files.Add(new Dal.Entities.File
+                {
+                    Filename = uploadModel.Filename + ext,
+                    Price = uploadModel.Price,
+                    Description = uploadModel.Description,
+                    UploadTime = DateTime.Now,
+                    Content = fileBytes,
+                    UserId = user.Id,
+                    Thumbnail = previewBytes
+                });
+
+                await dbContext.SaveChangesAsync();
+
+                logger.LogInformation(user.Id + ": uploaded a file!(" + uploadModel.Filename + ")");
+
+                System.IO.File.Delete(path);
+                System.IO.File.Delete(bmp_path);
+            }
+
         }
 
         public async Task<List<FileModel>> GetMyFiles()
