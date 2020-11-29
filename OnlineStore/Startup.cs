@@ -27,6 +27,11 @@ using OnlineStore.Bll.Mapper;
 using OnlineStore.Api.Initializer;
 using OnlineStore.Api.ExceptionMiddleware;
 using System.IO;
+using OnlineStore.Bll.Validation;
+using FluentValidation;
+using OnlineStore.Core.File;
+using OnlineStore.Bll.Validation.ValidationModels;
+using OnlineStore.Core.User;
 
 namespace OnlineStore
 {
@@ -95,6 +100,13 @@ namespace OnlineStore
             });
 
             services.AddSingleton(s => MapperConfig.ConfigureAutoMapper());
+
+            services.AddScoped<IModelValidator, ModelValidator>();
+
+            services.AddTransient<IValidator<NewCommentModel>, CommentValidator>();
+            services.AddTransient<IValidator<LoginModel>, LoginValidator>();
+            services.AddTransient<IValidator<RegistrationModel>, RegisterValidator>();
+            services.AddTransient<IValidator<UploadModel>, UploadValidator>();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IUserService, UserService>();
