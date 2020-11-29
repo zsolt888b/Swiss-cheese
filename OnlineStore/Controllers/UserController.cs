@@ -23,7 +23,10 @@ namespace OnlineStore.Api.Controllers
         [HttpPost]
         public async Task Register([FromBody]RegistrationModel model)
         {
-            await userService.Register(model);
+            var validator = new RegistrationValidator();
+            var result = validator.Validate(model);
+            if(result.IsValid)
+                await userService.Register(model);
         }
 
         [HttpPost]
@@ -49,7 +52,19 @@ namespace OnlineStore.Api.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task EditUsers([FromBody]List<UserModel> models)
         {
-            await userService.EditUsers(models);
+            var validator = new UserValidator();
+            bool error = false;
+            foreach (UserModel model in models)
+            {
+                var result = validator.Validate(model);
+                if (!result.IsValid)
+                {
+                    error = true;
+                    break;
+                }
+            }
+            if(!error)
+                await userService.EditUsers(models);
         }
 
         [HttpGet]

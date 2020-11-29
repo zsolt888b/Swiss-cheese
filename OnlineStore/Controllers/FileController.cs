@@ -26,7 +26,10 @@ namespace OnlineStore.Api.Controllers
         [HttpPost]
         public async Task Upload([FromForm]UploadModel uploadModel)  
         {
-            await fileService.Upload(uploadModel);
+            var validator = new UploadValidator();
+            var result = validator.Validate(uploadModel);
+            if (result.IsValid)
+                await fileService.Upload(uploadModel);
         }
 
         [Authorize(Roles = "User" + "," + "Administrator")]
@@ -55,7 +58,10 @@ namespace OnlineStore.Api.Controllers
         [HttpPost]
         public async Task Comment([FromQuery]NewCommentModel model)
         {
-            await fileService.Comment(model);
+            var validator = new NewCommentValidator();
+            var result = validator.Validate(model);
+            if (result.IsValid)
+                await fileService.Comment(model);
         }
 
         [Authorize(Roles = "Administrator")]

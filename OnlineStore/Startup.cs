@@ -27,6 +27,10 @@ using OnlineStore.Bll.Mapper;
 using OnlineStore.Api.Initializer;
 using OnlineStore.Api.ExceptionMiddleware;
 using System.IO;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using OnlineStore.Core.User;
+using OnlineStore.Core.File;
 
 namespace OnlineStore
 {
@@ -55,7 +59,15 @@ namespace OnlineStore
 
             services.AddControllers();
 
-            services.AddMvc();
+            services.AddMvc().AddFluentValidation();
+
+            services.AddTransient<IValidator<NewCommentModel>, NewCommentValidator>();
+            services.AddTransient<IValidator<UploadModel>, UploadValidator>();
+
+            services.AddTransient<IValidator<LoginModel>, LoginValidator>();
+            services.AddTransient<IValidator<RegistrationModel>, RegistrationValidator>();
+            services.AddTransient<IValidator<UserModel>, UserValidator>();
+
             services.AddSwaggerDocument();
 
             services.AddAuthentication(opt => {
