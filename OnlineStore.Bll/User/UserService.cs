@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineStore.Bll.UserAccess;
+using OnlineStore.Bll.Validation;
 using OnlineStore.Core.Options;
 using OnlineStore.Core.User;
 using OnlineStore.Dal;
@@ -27,6 +28,7 @@ namespace OnlineStore.Bll.User
         private readonly IMapper mapper;
         private readonly IUserAccess userAccess;
         private readonly ILogger<UserService> logger;
+        private readonly IModelValidator validator;
         private readonly JwtOptions jwtOptions;
 
         public UserService(UserManager<Dal.Entities.User> userManager,
@@ -36,7 +38,8 @@ namespace OnlineStore.Bll.User
             OnlineStoreDbContext dbContext,
             IMapper mapper,
             IUserAccess userAccess,
-            ILogger<UserService> logger)
+            ILogger<UserService> logger,
+            IModelValidator validator)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -45,6 +48,7 @@ namespace OnlineStore.Bll.User
             this.mapper = mapper;
             this.userAccess = userAccess;
             this.logger = logger;
+            this.validator = validator;
             this.jwtOptions = jwtOptions.Value;
         }
 
@@ -98,6 +102,8 @@ namespace OnlineStore.Bll.User
 
         public async Task<string> Login(LoginModel model)
         {
+            validator.ValidateAndThrow(model);
+
             var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
             if (!result.Succeeded)
             {
@@ -114,6 +120,8 @@ namespace OnlineStore.Bll.User
 
         public async Task Register(RegistrationModel model)
         {
+            validator.ValidateAndThrow(model);
+
             var isNameInUse = await userManager.FindByNameAsync(model.Username);
             if (isNameInUse != null)
             {

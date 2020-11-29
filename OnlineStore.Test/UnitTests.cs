@@ -42,11 +42,13 @@ namespace OnlineStore.Test
 
             var someOptions = Options.Create(new JwtOptions());
 
-            service = new UserService(null, null, null, someOptions, context, mapper, accessMock, logger);
+            var validator = new MockValidator();
+
+            service = new UserService(null, null, null, someOptions, context, mapper, accessMock, logger, validator);
 
             var fileLogger = factory.CreateLogger<FileService>();
 
-            fileService = new FileService(accessMock, context, mapper, fileLogger);
+            fileService = new FileService(accessMock, context, mapper, fileLogger, validator);
 
             var testUser = new User
             {

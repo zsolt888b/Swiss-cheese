@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStore.Bll.Extensions;
 using OnlineStore.Bll.UserAccess;
+using OnlineStore.Bll.Validation;
 using OnlineStore.Core.File;
 using OnlineStore.Dal;
 using System;
@@ -18,20 +19,25 @@ namespace OnlineStore.Bll.File
         private readonly OnlineStoreDbContext dbContext;
         private readonly IMapper mapper;
         private readonly ILogger<FileService> logger;
+        private readonly IModelValidator validator;
 
         public FileService(IUserAccess userAccess,
                            OnlineStoreDbContext dbContext,
                            IMapper mapper,
-                           ILogger<FileService> logger)
+                           ILogger<FileService> logger,
+                           IModelValidator validator)
         {
             this.userAccess = userAccess;
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
+            this.validator = validator;
         }
 
         public async Task Comment(NewCommentModel model)
         {
+            validator.ValidateAndThrow(model);
+
             var user = await userAccess.GetUser();
 
             if (user.Banned)
@@ -139,6 +145,8 @@ namespace OnlineStore.Bll.File
 
         public async Task Upload(UploadModel uploadModel)
         {
+            validator.ValidateAndThrow(uploadModel);
+
             var user = await userAccess.GetUser();
 
             var fileBytes = await uploadModel.File.ToByteArrayAsync();
@@ -148,6 +156,11 @@ namespace OnlineStore.Bll.File
             if (fileBytes !=null)
             {
                ext = System.IO.Path.GetExtension(uploadModel.File.FileName);
+
+                if (ext != ".caff")
+                {
+                    throw new Exception("Wrong file format!");
+                }
             }
 
             dbContext.Files.Add(new Dal.Entities.File
