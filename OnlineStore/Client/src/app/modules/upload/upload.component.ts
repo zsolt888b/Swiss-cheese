@@ -51,8 +51,13 @@ export class UploadComponent implements OnInit {
 
     this.fileService.upload(this.fileToUpload? {data: this.fileToUpload, fileName : this.fileToUpload.name} : null, this.description, this.filename, this.price)
         .subscribe(res =>{
-          this.toastr.success("File succesfully uploaded!");
-          this.router.navigate([""]);
+          if(res.length>1){
+            this.toastr.error(res);
+            this.router.navigate([""]);
+          }else{
+            this.toastr.success("File succesfully uploaded!");
+            this.router.navigate([""]);
+          }
         },error =>{
 
         });

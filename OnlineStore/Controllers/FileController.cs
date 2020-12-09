@@ -24,9 +24,9 @@ namespace OnlineStore.Api.Controllers
 
         [Authorize(Roles = "User" + "," + "Administrator")]
         [HttpPost]
-        public async Task Upload([FromForm]UploadModel uploadModel)  
+        public async Task<string> Upload([FromForm]UploadModel uploadModel)  
         {
-            await fileService.Upload(uploadModel);
+            return await fileService.Upload(uploadModel);
         }
 
         [Authorize(Roles = "User" + "," + "Administrator")]

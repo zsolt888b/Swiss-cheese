@@ -146,7 +146,7 @@ namespace OnlineStore.Bll.File
             return mappedFiles;
         }
 
-        public async Task Upload(UploadModel uploadModel)
+        public async Task<string> Upload(UploadModel uploadModel)
         {
             validator.ValidateAndThrow(uploadModel);
 
@@ -159,6 +159,8 @@ namespace OnlineStore.Bll.File
             await FileSaveExtension.SaveAsAsync(uploadModel.File, path);
 
             byte[] previewBytes = null;
+
+            var errorString = String.Empty;
 
             try
             {
@@ -176,7 +178,7 @@ namespace OnlineStore.Bll.File
 
                     if (process.ExitCode == 1)
                     {
-                        throw new Exception("Something went wrong during parsing CAFF file!");
+                        throw new Exception("Could not parse CAFF file!");
                     }
 
                     if (System.IO.File.Exists(bmp_path))
@@ -185,9 +187,10 @@ namespace OnlineStore.Bll.File
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                logger.LogError(ex.Message);
+                errorString = ex.Message;
             }
             finally
             {
@@ -218,6 +221,8 @@ namespace OnlineStore.Bll.File
                 System.IO.File.Delete(path);
                 System.IO.File.Delete(bmp_path);
             }
+
+            return errorString;
 
         }
 

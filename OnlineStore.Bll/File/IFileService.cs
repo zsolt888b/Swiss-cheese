@@ -8,7 +8,7 @@ namespace OnlineStore.Bll.File
 {
     public interface IFileService
     {
-        Task Upload(UploadModel uploadModel);
+        Task<string> Upload(UploadModel uploadModel);
         Task<(byte[],string)> Download(int fileId);
         Task<List<FileModel>> GetFiles(FileSearchModel fileSearchModel);
         Task DeleteFile(int fileId);
